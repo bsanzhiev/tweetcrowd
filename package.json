@@ -16,14 +16,30 @@
     "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@types/node": "20.2.5",
+    "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
+    "@nomicfoundation/hardhat-ethers": "^3.0.0",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.0",
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "@nomicfoundation/hardhat-verify": "^1.0.0",
+    "@typechain/ethers-v6": "^0.4.0",
+    "@typechain/hardhat": "^8.0.0",
+    "@types/chai": "^4.2.0",
+    "@types/mocha": ">=9.1.0",
+    "@types/node": ">=16.0.0",
     "@types/react": "18.2.7",
     "@types/react-dom": "18.2.4",
+    "chai": "^4.2.0",
     "eslint": "8.41.0",
     "eslint-config-next": "13.4.4",
+    "ethers": "^6.4.0",
+    "hardhat": "^2.14.0",
+    "hardhat-gas-reporter": "^1.0.8",
     "postcss": "^8.4.24",
     "postcss-preset-mantine": "1.9.0",
     "postcss-simple-vars": "^7.0.1",
-    "typescript": "5.0.4"
+    "solidity-coverage": "^0.8.0",
+    "ts-node": ">=8.0.0",
+    "typechain": "^8.1.0",
+    "typescript": ">=4.5.0"
   }
 }
