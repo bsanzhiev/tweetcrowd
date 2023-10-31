@@ -1,6 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Web3 from "web3";
+import Contract from "web3-eth-contract";
+import CrowdfundingContract from "../instances/Crowdfunding.json";
 import {
 	Badge,
 	Box,
@@ -14,16 +17,39 @@ import {
 	TextInput,
 	Title,
 } from "@mantine/core";
+import { useForm } from "@mantine/form";
 import NextImage from "next/image";
 import elonJpg from "../public/elon.jpg";
 
-// Import wallet sdk
 import { useSDK } from "@metamask/sdk-react";
 
+const CROWDFUNDING_CONTRACT_ADDRESS =
+	"0x9A676e781A523b5d0C0e43731313A708CB607508";
+
 export default function HomePage() {
-	const [isWalletConnected, setIsWalletConnected] = useState(false);
-	const [account, setAccount] = useState<string>();
+	// const [isWalletConnected, setIsWalletConnected] = useState(false);
 	const { sdk, connected, connecting, provider, chainId } = useSDK();
+	const [account, setAccount] = useState<string>();
+	const [crowdfundingContractInstance, setCrowdfundingContractInstance] =
+		useState();
+
+	const web3 = new Web3("http://localhost:8545");
+
+	useEffect(() => {
+		const web3ForContract = new Web3(window.ethereum);
+		Contract.getProvider(web3ForContract);
+		const crowdfundingContractInstance = new Contract(
+			CrowdfundingContract,
+			CROWDFUNDING_CONTRACT_ADDRESS
+		);
+		setCrowdfundingContractInstance(crowdfundingContractInstance);
+	});
+
+	const form = useForm({
+		initialValues: {
+			donateAmount: "10000000000000000",
+		},
+	});
 
 	const connect = async () => {
 		try {
@@ -34,10 +60,25 @@ export default function HomePage() {
 		}
 	};
 
-  const closeConnection = () => {
-    sdk?.terminate();
-  }
-  console.log("account", account)
+	const closeConnection = () => {
+		sdk?.terminate();
+	};
+	console.log("account", account);
+
+	const donateETH = async () => {
+		if (!account || !window.ethereum) {
+			console.log("Wallet is not connected");
+			return;
+		}
+		const donationAmount = form.getInputProps("donateAmount").value;
+
+		console.log("donateAmount", donationAmount);
+
+		const response = await crowdfundingContractInstance.method.donate().send({
+			from: account,
+			value: donationAmount,
+		});
+	};
 
 	return (
 		<>
@@ -55,10 +96,7 @@ export default function HomePage() {
 				</header>
 
 				{connected ? (
-					<Container
-						style={{ display: "flex", flexDirection: "column" }}
-						size={"xs"}
-					>
+					<Container style={{ display: "flex", flexDirection: "column" }}>
 						<Card
 							padding="lg"
 							withBorder
@@ -77,9 +115,9 @@ export default function HomePage() {
 								<TextInput
 									style={{ width: "fit-content", maxWidth: "100%" }}
 									rightSection={<Text>WEI</Text>}
-									defaultValue={10000000000000000}
+									{...form.getInputProps("donateAmount")}
 								/>
-								<Button onClick={() => console.log("click")}>Donate</Button>
+								<Button onClick={donateETH}>Donate</Button>
 							</Group>
 						</Card>
 						<Box>
