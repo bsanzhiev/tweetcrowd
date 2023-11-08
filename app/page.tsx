@@ -37,7 +37,7 @@ export default function HomePage() {
 
 	useEffect(() => {
 		const web3ForContract = new Web3(window.ethereum);
-		Contract.getProvider(web3ForContract);
+		// Contract.getProvider(web3ForContract);
 		const crowdfundingContractInstance = new Contract(
 			CrowdfundingContract,
 			CROWDFUNDING_CONTRACT_ADDRESS
