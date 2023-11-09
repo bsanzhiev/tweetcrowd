@@ -23,14 +23,12 @@
         "name": "next"
       },
     ],
-    "types": ["solc-typed-ast"]
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/types/solc.d.ts"
   ],
   "exclude": [
     "node_modules"
