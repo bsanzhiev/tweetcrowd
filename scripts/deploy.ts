@@ -6,8 +6,9 @@ async function main() {
   const crowdfunding = await Crowdfunding.deploy();
   // await crowdfunding.waitForDeployment();
   await crowdfunding.waitForDeployment();
+  const contractAddress = await crowdfunding.getAddress();
 
-  console.log("Crowdfunding contract deployed to:", crowdfunding.address);
+  console.log("Crowdfunding contract deployed to:", contractAddress);
 }
 
 main()
