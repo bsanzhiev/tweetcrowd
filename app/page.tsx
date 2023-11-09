@@ -33,6 +33,9 @@ export default function HomePage() {
 
   const { sdk, connected, connecting, provider, chainId } = useSDK();
   const [contract, setContract] = useState();
+  const [responseMessage, setResponseMessage] = useState<string | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     const contract: any = new web3.eth.Contract(
@@ -68,24 +71,31 @@ export default function HomePage() {
   const closeConnection = () => {
     sdk?.terminate();
   };
-  console.log("account", account);
 
   const donateETH = async () => {
-    if (!account || !window.ethereum) {
-      console.log("Wallet is not connected");
-      return;
-    }
     const donationAmount = form.getInputProps("donateAmount").value;
-
-    console.log("donateAmount", donationAmount);
-
-    // const contract: Contract = 
     const response = await contract.methods.donate().send({
       from: account,
       value: donationAmount,
     });
     console.log("contract", response);
   };
+
+  const getDonationBalance = async () => {
+    const response = await contract.methods.getBalance().call();
+	console.log("response getBalance",response);
+    setResponseMessage(
+      `Total contribution amount is ${web3.utils.fromWei(response, "wei")} ETH.`
+    );
+  };
+
+  const requestRefund = async () => {
+    await contract.methods
+      .withdraw()
+      .send({ from: account });
+    setResponseMessage('Your donation has been refunded.');
+  };
+
 
   return (
     <>
@@ -128,12 +138,12 @@ export default function HomePage() {
               </Group>
             </Card>
             <Box>
-              <Button onClick={() => console.log("click1")}>
+              <Button onClick={getDonationBalance}>
                 See Total Contribution Amount
               </Button>
             </Box>
             <Box>
-              <Button mt={24} onClick={() => console.log("click2")}>
+              <Button mt={24} onClick={requestRefund}>
                 Request Refund
               </Button>
             </Box>
@@ -149,7 +159,7 @@ export default function HomePage() {
           </Container>
         )}
         <Container mt={16}>
-          <Text>Response Message</Text>
+          <Text>Response {responseMessage}</Text>
         </Container>
       </Container>
     </>
